@@ -14,6 +14,10 @@ namespace Library.Domain.Models
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
+        /// ISBN of an publication
+        /// </summary>
+        public string ISBN { get; set; }
+        ///<summary>
         /// Title of publication
         /// </summary>
         public string Title { get; set; }
