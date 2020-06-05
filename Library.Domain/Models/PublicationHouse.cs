@@ -17,5 +17,9 @@ namespace Library.Domain.Models
         /// Name of publication house
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Publications of publication house
+        /// </summary>
+        public ICollection<Publication> Publications { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Library.Domain.Models
 {
@@ -15,5 +16,9 @@ namespace Library.Domain.Models
         /// Name of category
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Publications in certain category
+        /// </summary>
+        public ICollection<PublicationCategories> PublicationCategories { get; set; }
     }
 }

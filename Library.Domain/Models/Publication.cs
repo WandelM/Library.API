@@ -5,7 +5,7 @@ using System.Text;
 namespace Library.Domain.Models
 {
     /// <summary>
-    /// Single publication
+    /// Model of single publication
     /// </summary>
     public class Publication
     {
@@ -30,12 +30,24 @@ namespace Library.Domain.Models
         /// </summary>
         public PublicationType PublicationType { get; set; }
         /// <summary>
+        /// PublicationHouse of publication
+        /// </summary>
+        public PublicationHouse PublicationHouse { get; set; }
+        /// <summary>
+        /// Id of publication house
+        /// </summary>
+        public Guid PublicationHouseId { get; set; }
+        /// <summary>
         /// Count of pages
         /// </summary>
         public byte PageCount { get; set; }
         /// <summary>
         /// Categories of publication
         /// </summary>
-        public ICollection<Category> Categories = new List<Category>();
+        public ICollection<PublicationCategories> PublicationCategories { get; set; }
+        /// <summary>
+        /// Authors of an publication
+        /// </summary>
+        public ICollection<PublicationAuthors> PublicationAuthors { get; set; }
     }
 }

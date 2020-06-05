@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library.Domain.Models
 {
@@ -27,5 +29,9 @@ namespace Library.Domain.Models
         /// Authors date of death
         /// </summary>
         public DateTime DateOfDeath { get; set; }
+        /// <summary>
+        /// Publications of an author
+        /// </summary>
+        public ICollection<PublicationAuthors> PublicationAuthors { get; set; }
     }
 }
