@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Library.API.DbContexts;
+using Library.API.Services;
 using Library.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
+using Swashbuckle.AspNetCore;
 using Microsoft.Extensions.Options;
+
 
 namespace Library.API
 {
@@ -27,33 +32,49 @@ namespace Library.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddLogging(loggingConfiguration =>
             {
                 loggingConfiguration.AddConsole();
             });
 
+            services.AddSwaggerGen(setup =>
+            {
+                setup.SwaggerDoc("LibraryAPI", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = "LibraryAPI",
+                    Version = "v1"
+                });
+            });
+
             services.AddDbContext<LibraryContext>(configure => {
                 configure.UseSqlServer(Configuration.GetConnectionString("LibraryConnection"));
             });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddTransient(typeof(IAuthorRepository), typeof(AuthorsRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment webHostEnvironment)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
             app.UseHttpsRedirection();
-            app.UseMvc();
+            
+            app.UseRouting();
+
+            app.UseEndpoints(configure =>
+            {
+                configure.MapControllers();
+            });
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setup =>
+            {
+                setup.SwaggerEndpoint("/swagger/LibraryAPI/swagger.json", "LibraryApi");
+            });
         }
     }
 }

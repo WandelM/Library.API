@@ -1,20 +1,14 @@
 ﻿using Library.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Library.Domain
+namespace Library.API.DbContexts
 {
-    /// <summary>
-    /// DbContext of whole library
-    /// </summary>
-    public class LibraryContext:DbContext
+    public class LibraryContext : DbContext
     {
         /// <summary>
         /// Inherited default constructor
         /// </summary>
-        public LibraryContext():base()
+        public LibraryContext(DbContextOptions options) : base(options)
         {
         }
 
