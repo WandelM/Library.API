@@ -28,7 +28,7 @@ namespace Library.Domain.Models
         /// <summary>
         /// Authors date of death
         /// </summary>
-        public DateTime DateOfDeath { get; set; }
+        public DateTime? DateOfDeath { get; set; }
         /// <summary>
         /// Publications of an author
         /// </summary>

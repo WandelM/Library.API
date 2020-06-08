@@ -66,5 +66,20 @@ namespace Library.API.Controllers
 
             return CreatedAtRoute("GetAuthor", new { authorId = authorToInsert.Id }, authorToReturn);
         }
+
+        [HttpDelete("{authorId}")]
+        public async Task<IActionResult> DeleteAuthor(Guid authorId)
+        {
+            var authorToDelete = await _authorRepository.GetAuthorAsync(authorId);
+
+            if (authorToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _authorRepository.Delete(authorToDelete);
+            await _authorRepository.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
