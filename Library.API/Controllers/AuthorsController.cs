@@ -34,7 +34,7 @@ namespace Library.API.Controllers
             return Ok(_mapper.Map<IEnumerable<AuthorOutputModel>>(authorsFromDb));
         }
 
-        [HttpGet("{authorId}", Name ="GetAuthor")]
+        [HttpGet("{authorId}", Name = "GetAuthor")]
         public async Task<ActionResult<AuthorOutputModel>> GetAuthor(Guid authorId)
         {
             var authorFromDb = await _authorRepository.GetAuthorAsync(authorId);
@@ -65,6 +65,28 @@ namespace Library.API.Controllers
             var authorToReturn = _mapper.Map<AuthorOutputModel>(authorToInsert);
 
             return CreatedAtRoute("GetAuthor", new { authorId = authorToInsert.Id }, authorToReturn);
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AuthorOutputModel>> UpdateAuthor(AuthorForUpdateModel authorToUpdate)
+        {
+            var authorExists = _authorRepository.AuthorExists(authorToUpdate.Id);
+
+            if (!authorExists)
+            {
+                return NotFound();
+            }
+
+            var updatedAuthor = _mapper.Map<Domain.Models.Author>(authorToUpdate);
+
+            _authorRepository.UpdateAuthor(authorToUpdate.Id, updatedAuthor);
+            await _authorRepository.SaveChangesAsync();
+
+            var authorOutput = _mapper.Map<AuthorOutputModel>(updatedAuthor);
+
+            return Ok(authorOutput);
         }
 
         [HttpDelete("{authorId}")]

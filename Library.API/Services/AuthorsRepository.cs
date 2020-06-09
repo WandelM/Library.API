@@ -47,9 +47,9 @@ namespace Library.API.Services
             _libraryContext.Authors.Remove(value);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Guid authorId)
         {
-            var authorToDelete = _libraryContext.Authors.Single(a => a.Id == id);
+            var authorToDelete = _libraryContext.Authors.Single(a => a.Id == authorId);
 
             _libraryContext.Authors.Remove(authorToDelete);
         }
