@@ -6,6 +6,7 @@ using AutoMapper;
 using Library.API.Models;
 using Library.API.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers
@@ -102,6 +103,35 @@ namespace Library.API.Controllers
             _authorRepository.Delete(authorToDelete);
             await _authorRepository.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpPatch("{authorId}")]
+        public async Task<ActionResult<AuthorOutputModel>> PartiallyUpdateAuthor(Guid authorId, 
+            JsonPatchDocument<AuthorForUpdateModel> patchDocument)
+        {
+            var authorFromDb = await _authorRepository.GetAuthorAsync(authorId);
+
+            if (authorFromDb == null)
+            {
+                return NotFound();
+            }
+
+            var authorForUpdate = _mapper.Map<AuthorForUpdateModel>(authorFromDb);
+
+            patchDocument.ApplyTo(authorForUpdate, ModelState);
+
+            if (!TryValidateModel(authorForUpdate))
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            _mapper.Map(authorForUpdate, authorFromDb);
+
+            _authorRepository.UpdateAuthor(authorId, authorFromDb);
+
+            await _authorRepository.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

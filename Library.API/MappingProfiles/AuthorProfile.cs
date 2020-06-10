@@ -14,6 +14,7 @@ namespace Library.API.MappingProfiles
             CreateMap<AuthorInputModel, Domain.Models.Author>();
             CreateMap<Domain.Models.Author, AuthorOutputModel>();
             CreateMap<AuthorForUpdateModel, Domain.Models.Author>();
+            CreateMap<Domain.Models.Author, AuthorForUpdateModel>();
         }
     }
 }
