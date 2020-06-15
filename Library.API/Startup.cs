@@ -64,6 +64,8 @@ namespace Library.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddTransient(typeof(IAuthorRepository), typeof(AuthorsRepository));
+
+            services.AddTransient(typeof(IPublicationHouseRepository), typeof(PublicationHouseRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

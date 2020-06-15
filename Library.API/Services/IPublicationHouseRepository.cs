@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Library.API.Services
 {
-    interface IPublicationHouseRepository:IRepository<Domain.Models.PublicationHouse>
+    public interface IPublicationHouseRepository:IRepository<Domain.Models.PublicationHouse>
     {
         Task<Domain.Models.PublicationHouse> GetPublicationHouseAsync(Guid id);
         bool DeletePublicationHouse(Guid publicationHouseId);
