@@ -100,13 +100,13 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            _authorRepository.Delete(authorToDelete);
+            _authorRepository.Delete(authorToDelete.Id);
             await _authorRepository.SaveChangesAsync();
             return Ok();
         }
 
         [HttpPatch("{authorId}")]
-        public async Task<ActionResult<AuthorOutputModel>> PartiallyUpdateAuthor(Guid authorId, 
+        public async Task<IActionResult> PartiallyUpdateAuthor(Guid authorId, 
             JsonPatchDocument<AuthorForUpdateModel> patchDocument)
         {
             var authorFromDb = await _authorRepository.GetAuthorAsync(authorId);

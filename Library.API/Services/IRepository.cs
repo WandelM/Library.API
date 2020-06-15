@@ -9,7 +9,6 @@ namespace Library.API.Services
     {
         Task<IEnumerable<T>> GetAllAsync();
         void Add(T value);
-        void Delete(T value);
         Task SaveChangesAsync();
     }
 }
