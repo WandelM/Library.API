@@ -100,7 +100,7 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            _authorRepository.Delete(authorToDelete.Id);
+            _authorRepository.Remove(authorToDelete.Id);
             await _authorRepository.SaveChangesAsync();
             return Ok();
         }

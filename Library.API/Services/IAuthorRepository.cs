@@ -10,7 +10,6 @@ namespace Library.API.Services
     {
         Task<Author> GetAuthorAsync(Guid authorId);
         bool AuthorExists(Guid authorId);
-        void Delete(Guid id);
         void UpdateAuthor(Guid authorId, Author updatedAuthor);
     }
 }
