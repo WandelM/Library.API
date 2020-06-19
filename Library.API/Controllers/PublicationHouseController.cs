@@ -22,7 +22,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Models.PublicationHouseOutputModel>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Dtos.PublicationHouseOutputModel>>> GetAll()
         {
             var publicationHousesList = await _publicationHouseRepository.GetAllAsync();
 
@@ -31,7 +31,35 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<IEnumerable<Models.PublicationHouseOutputModel>>(publicationHousesList));
+            return Ok(_mapper.Map<IEnumerable<Dtos.PublicationHouseOutputModel>>(publicationHousesList));
+        }
+
+        [HttpGet("{publicationHouseId}", Name = "GetPublicationHouse")]
+        public async Task<ActionResult<Dtos.PublicationHouseOutputModel>> GetPublicationHouse(Guid publicationHouseId)
+        {
+            var publicationHouse = await _publicationHouseRepository.GetAsync(publicationHouseId);
+
+            if (publicationHouse == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<Dtos.PublicationHouseOutputModel>(publicationHouse));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Dtos.PublicationHouseOutputModel>> AddPublicationHouse(
+            Dtos.PublicationHouseInputModel publicationHouseInput)
+        {
+            var mappedPublicationHouse = _mapper.Map<Domain.Models.PublicationHouse>(publicationHouseInput);
+
+            _publicationHouseRepository.Add(mappedPublicationHouse);
+            await _publicationHouseRepository.SaveChangesAsync();
+
+            var publicationHouseOutput = _mapper.Map<Dtos.PublicationHouseOutputModel>(mappedPublicationHouse);
+
+            return CreatedAtRoute("GetPublicationHouse", new { publicationHouseId = mappedPublicationHouse.Id },
+                publicationHouseOutput);
         }
     }
 }

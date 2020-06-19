@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Library.API.Models
+namespace Library.API.Dtos
 {
     public class PublicationHouseUpdateModel
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Library.API.Models
+namespace Library.API.Dtos
 {
     public class PublicationHouseOutputModel
     {
@@ -16,9 +16,5 @@ namespace Library.API.Models
         /// Name of publication house
         /// </summary>
         public string Name { get; set; }
-        /// <summary>
-        /// Publications of publication house
-        /// </summary>
-        public ICollection<Publication> Publications { get; set; }
     }
 }

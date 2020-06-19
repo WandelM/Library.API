@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Library.API.Models;
+using Library.API.Dtos;
 using Library.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,7 +11,7 @@ namespace Library.API.Controllers
 {
     [ApiController]
     [Route("/api/categories")]
-    public class CategoriesController:ControllerBase
+    public class CategoriesController : ControllerBase
     {
         private readonly ICategoriesRepository _categoriesRepository;
         private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ namespace Library.API.Controllers
             return Ok(mappedCategories);
         }
 
-        [HttpGet("{categoryId}")]
+        [HttpGet("{categoryId}", Name = "GetCategory")]
         public async Task<ActionResult<CategoryOutputModel>> GetCategorie(Guid categoryId)
         {
             var categoryFromRepo = await _categoriesRepository.GetAsync(categoryId);
@@ -50,6 +50,52 @@ namespace Library.API.Controllers
             var mappedCategory = _mapper.Map<CategoryOutputModel>(categoryFromRepo);
 
             return Ok(mappedCategory);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<CategoryOutputModel>> CreateCategory(CategoryInputModel categoryInputModel)
+        {
+            var categoryToInsert = _mapper.Map<Domain.Models.Category>(categoryInputModel);
+
+            _categoriesRepository.Add(categoryToInsert);
+            await _categoriesRepository.SaveChangesAsync();
+
+            var categoryOutput = _mapper.Map<Dtos.CategoryOutputModel>(categoryToInsert);
+
+            return CreatedAtRoute("GetCategory", new { categoryId = categoryToInsert.Id }, categoryOutput);
+        }
+
+        [HttpDelete("{categoryId}")]
+        public async Task<IActionResult> DeleteCategory(Guid categoryId)
+        {
+            var categoryToDelete = await _categoriesRepository.GetAsync(categoryId);
+
+            if (categoryToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _categoriesRepository.Remove(categoryToDelete);
+            await _categoriesRepository.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(CategoryUpdateModel categoryUpdateModel)
+        {
+            var categoryToUpdate = await _categoriesRepository.GetAsync(categoryUpdateModel.Id);
+
+            if (categoryToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            categoryToUpdate = _mapper.Map<Domain.Models.Category>(categoryUpdateModel);
+            
+            await _categoriesRepository.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

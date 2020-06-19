@@ -10,7 +10,9 @@ namespace Library.API.MappingProfiles
     {
         public CategoryProfile()
         {
-            CreateMap<Domain.Models.Category, Models.CategoryOutputModel>();
+            CreateMap<Domain.Models.Category, Dtos.CategoryOutputModel>();
+            CreateMap<Dtos.CategoryInputModel, Domain.Models.Category>();
+            CreateMap<Dtos.CategoryUpdateModel, Domain.Models.Category>();
         }
     }
 }

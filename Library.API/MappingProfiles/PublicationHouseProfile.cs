@@ -10,9 +10,9 @@ namespace Library.API.MappingProfiles
     {
         public PublicationHouseProfile()
         {
-            CreateMap<Models.PublicationHouseUpdateModel, Domain.Models.PublicationHouse>();
-            CreateMap<Domain.Models.PublicationHouse, Models.PublicationHouseOutputModel>();
-            CreateMap<Models.PublicationHouseInputModel, Domain.Models.PublicationHouse>();
+            CreateMap<Dtos.PublicationHouseUpdateModel, Domain.Models.PublicationHouse>();
+            CreateMap<Domain.Models.PublicationHouse, Dtos.PublicationHouseOutputModel>();
+            CreateMap<Dtos.PublicationHouseInputModel, Domain.Models.PublicationHouse>();
         }
     }
 }

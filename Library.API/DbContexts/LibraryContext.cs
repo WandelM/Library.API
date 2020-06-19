@@ -67,7 +67,6 @@ namespace Library.API.DbContexts
             modelBuilder.Entity<Publication>().Property(p => p.PageCount).IsRequired();
 
             modelBuilder.Entity<PublicationHouse>().Property(ph => ph.Name).IsRequired();
-
             //Length configuration
             modelBuilder.Entity<Author>().Property(a => a.Name).HasMaxLength(100);
             modelBuilder.Entity<Author>().Property(a => a.Surname).HasMaxLength(100);
