@@ -23,6 +23,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<CategoryOutputModel>>> GetAllCategories()
         {
             var categoriesFromRepo = await _categoriesRepository.GetAllAsync();
@@ -38,6 +39,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{categoryId}", Name = "GetCategory")]
+        [Produces("application/json")]
         public async Task<ActionResult<CategoryOutputModel>> GetCategorie(Guid categoryId)
         {
             var categoryFromRepo = await _categoriesRepository.GetAsync(categoryId);
@@ -53,6 +55,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         public async Task<ActionResult<CategoryOutputModel>> CreateCategory(CategoryInputModel categoryInputModel)
         {
             var categoryToInsert = _mapper.Map<Domain.Models.Category>(categoryInputModel);
@@ -82,6 +85,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPut]
+        [Produces("application/json")]
         public async Task<IActionResult> UpdateCategory(CategoryUpdateModel categoryUpdateModel)
         {
             var categoryToUpdate = await _categoriesRepository.GetAsync(categoryUpdateModel.Id);

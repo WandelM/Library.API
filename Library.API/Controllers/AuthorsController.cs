@@ -28,6 +28,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<AuthorOutputModel>>> GetAuthors()
         {
             var authorsFromDb = await _authorRepository.GetAllAsync();
@@ -36,6 +37,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
+        [Produces("application/json")]
         public async Task<ActionResult<AuthorOutputModel>> GetAuthor(Guid authorId)
         {
             var authorFromDb = await _authorRepository.GetAuthorAsync(authorId);
@@ -51,6 +53,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         public async Task<ActionResult<AuthorOutputModel>> AddAuthor(AuthorInputModel authorInput)
         {
             if (authorInput == null)
@@ -69,6 +72,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPut]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AuthorOutputModel>> UpdateAuthor(AuthorForUpdateModel authorToUpdate)

@@ -22,6 +22,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet]
+        [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<Dtos.PublicationHouseOutputModel>>> GetAll()
         {
             var publicationHousesList = await _publicationHouseRepository.GetAllAsync();
@@ -35,6 +36,7 @@ namespace Library.API.Controllers
         }
 
         [HttpGet("{publicationHouseId}", Name = "GetPublicationHouse")]
+        [Produces("application/json")]
         public async Task<ActionResult<Dtos.PublicationHouseOutputModel>> GetPublicationHouse(Guid publicationHouseId)
         {
             var publicationHouse = await _publicationHouseRepository.GetAsync(publicationHouseId);
@@ -48,6 +50,7 @@ namespace Library.API.Controllers
         }
 
         [HttpPost]
+        [Produces("application/json")]
         public async Task<ActionResult<Dtos.PublicationHouseOutputModel>> AddPublicationHouse(
             Dtos.PublicationHouseInputModel publicationHouseInput)
         {
