@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Library.API.Dtos;
+using Library.API.Helpers;
 using Library.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -29,9 +30,9 @@ namespace Library.API.Controllers
 
         [HttpGet]
         [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<AuthorOutputModel>>> GetAuthors()
+        public async Task<ActionResult<IEnumerable<AuthorOutputModel>>> GetAuthors(int pageNumber, int pageSize)
         {
-            var authorsFromDb = await _authorRepository.GetAllAsync();
+            var authorsFromDb = await _authorRepository.GetPaginatedListAsync(pageSize, pageNumber);
 
             return Ok(_mapper.Map<IEnumerable<AuthorOutputModel>>(authorsFromDb));
         }

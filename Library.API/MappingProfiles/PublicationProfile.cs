@@ -12,6 +12,7 @@ namespace Library.API.MappingProfiles
         {
             CreateMap<Domain.Models.Publication, Dtos.PublicationOutputModel>();
             CreateMap<Dtos.PublicationInputModel, Domain.Models.Publication>();
+            CreateMap<Dtos.PublicationUpdateModel, Domain.Models.Publication>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Library.API.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace Library.API.Services
     {
         Task<T> GetAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
+        Task<PaginatedList<T>> GetPaginatedListAsync(int pageSize, int pageNumber);
         void Add(T value);
         void AddRange(IEnumerable<T> entitiesList);
         void Remove(T entity);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Library.API.DbContexts;
+using Library.API.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,13 @@ namespace Library.API.Services
             var entities = await _context.Set<T>().ToListAsync();
 
             return entities;
+        }
+
+        public async Task<PaginatedList<T>> GetPaginatedListAsync(int pageSize, int pageNumber)
+        {
+            var entities = _context.Set<T>() as IQueryable<T>;
+
+            return await PaginatedList<T>.GetPaginatedList(entities, pageSize, pageNumber);
         }
 
         /// <summary>

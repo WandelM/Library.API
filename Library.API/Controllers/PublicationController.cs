@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Library.API.Dtos;
 using Library.API.Services;
+using Library.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System;
@@ -180,6 +182,83 @@ namespace Library.API.Controllers
             }
 
             _publicationRepository.Remove(publicationToDelete);
+            await _publicationRepository.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePublication(PublicationUpdateModel publicationUpdateModel)
+        {
+            var publicationFromRepo = await _publicationRepository.GetFullPublicationAsync(publicationUpdateModel.Id);
+
+            if (publicationFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(publicationUpdateModel, publicationFromRepo);
+
+            var authorIdsFromInput = publicationUpdateModel.AuthorIds;
+
+            var publicationAuthors = new List<PublicationAuthors>();
+
+            foreach (var authorId in authorIdsFromInput)
+            {
+                var authorFromRepo = await _authorRepository.GetAsync(authorId);
+
+                if (authorFromRepo == null)
+                {
+                    return NotFound($"Author with id: {authorId} was not found");
+                }
+
+                var publicationAuthor = new Domain.Models.PublicationAuthors()
+                {
+                    Author = authorFromRepo,
+                    AuthorId = authorFromRepo.Id,
+                    Publication = publicationFromRepo,
+                    PublicationId = publicationFromRepo.Id
+                };
+
+                publicationAuthors.Add(publicationAuthor);
+            }
+
+            var categoryIdsFromInput = publicationUpdateModel.CategoryIds;
+
+            var publicationCategories = new List<Domain.Models.PublicationCategories>();
+
+            foreach (var categoryId in categoryIdsFromInput)
+            {
+                var categoryFromRepo = await _categoryRepository.GetAsync(categoryId);
+
+                if (categoryFromRepo == null)
+                {
+                    return NotFound($"Category with id: {categoryId} was not found");
+                }
+
+                var publicationCategory = new Domain.Models.PublicationCategories()
+                {
+                    Category = categoryFromRepo,
+                    CategoryId = categoryId,
+                    Publication = publicationFromRepo,
+                    PublicationId = publicationFromRepo.Id
+                };
+
+                publicationCategories.Add(publicationCategory);
+            }
+
+            var publicationHouseFromInput = await _publicationHouseRepository
+                .GetAsync(publicationUpdateModel.PublicationHouseId);
+
+            if (publicationHouseFromInput == null)
+            {
+                return NotFound($"Publication House with id: {publicationHouseFromInput.Id} was not found");
+            }
+
+            publicationFromRepo.PublicationAuthors = publicationAuthors;
+            publicationFromRepo.PublicationCategories = publicationCategories;
+            publicationFromRepo.PublicationHouseId = publicationHouseFromInput.Id;
+
             await _publicationRepository.SaveChangesAsync();
 
             return NoContent();
