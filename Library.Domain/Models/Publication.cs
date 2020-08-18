@@ -14,6 +14,10 @@ namespace Library.Domain.Models
         /// </summary>
         public Guid Id { get; set; }
         /// <summary>
+        /// Insert date of publication
+        /// </summary>
+        public DateTime InsertDate { get; set; }
+        /// <summary>
         /// ISBN of an publication
         /// </summary>
         public string ISBN { get; set; }

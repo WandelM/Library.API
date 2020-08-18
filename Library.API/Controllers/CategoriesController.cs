@@ -95,7 +95,7 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            categoryToUpdate = _mapper.Map<Domain.Models.Category>(categoryUpdateModel);
+            _mapper.Map(categoryUpdateModel, categoryToUpdate);
             
             await _categoriesRepository.SaveChangesAsync();
 

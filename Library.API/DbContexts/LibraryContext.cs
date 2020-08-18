@@ -36,6 +36,14 @@ namespace Library.API.DbContexts
         /// PublicationCategories table
         /// </summary>
         public virtual DbSet<PublicationCategories> PublicationCategories { get; set; }
+        /// <summary>
+        /// Users of a library
+        /// </summary>
+        public virtual DbSet<LibraryUser> LibraryUsers { get; set; }
+        /// <summary>
+        /// Card of a user
+        /// </summary>
+        public virtual DbSet<UserCard> UserCards { get; set; }
 
         /// <summary>
         /// Configuration of the entities
@@ -48,6 +56,8 @@ namespace Library.API.DbContexts
             modelBuilder.Entity<Category>().HasKey(c => c.Id);
             modelBuilder.Entity<Publication>().HasKey(p => p.Id);
             modelBuilder.Entity<PublicationHouse>().HasKey(ph => ph.Id);
+            modelBuilder.Entity<LibraryUser>().HasKey(lu => lu.Id);
+            modelBuilder.Entity<UserCard>().HasKey(uc => uc.Id);
 
             //Composite key configuration
             modelBuilder.Entity<PublicationAuthors>().HasKey(pa => new { pa.PublicationId, pa.AuthorId });
@@ -65,8 +75,23 @@ namespace Library.API.DbContexts
             modelBuilder.Entity<Publication>().Property(p => p.ISBN).IsRequired();
             modelBuilder.Entity<Publication>().Property(p => p.PublicationDate).IsRequired();
             modelBuilder.Entity<Publication>().Property(p => p.PageCount).IsRequired();
+            
+            modelBuilder.Entity<Publication>().Property(p => p.InsertDate).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Publication>().Property(p => p.InsertDate).HasDefaultValueSql("GETUTCDATE()");
 
             modelBuilder.Entity<PublicationHouse>().Property(ph => ph.Name).IsRequired();
+
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.Name).IsRequired();
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.Surname).IsRequired();
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.BirthDate).IsRequired();
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.InsertDate).ValueGeneratedOnAdd();
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.InsertDate).HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<UserCard>().Property(uc => uc.DueDate).IsRequired();
+            modelBuilder.Entity<UserCard>().Property(uc => uc.CreatedDate).ValueGeneratedOnAdd();
+            modelBuilder.Entity<UserCard>().Property(uc => uc.CreatedDate).HasDefaultValueSql("GETUTCDATE()");
+            modelBuilder.Entity<UserCard>().Property(uc => uc.CardNumber).IsRequired();
+            modelBuilder.Entity<UserCard>().Property(uc => uc.UserId).IsRequired();
             //Length configuration
             modelBuilder.Entity<Author>().Property(a => a.Name).HasMaxLength(100);
             modelBuilder.Entity<Author>().Property(a => a.Surname).HasMaxLength(100);
@@ -78,6 +103,8 @@ namespace Library.API.DbContexts
 
             modelBuilder.Entity<PublicationHouse>().Property(ph => ph.Name).HasMaxLength(100);
 
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.Name).HasMaxLength(50);
+            modelBuilder.Entity<LibraryUser>().Property(lu => lu.Surname).HasMaxLength(80);
             //Relations configurations
             modelBuilder.Entity<Publication>().HasOne(p => p.PublicationHouse).WithMany(ph => ph.Publications).HasForeignKey(p => p.PublicationHouseId);
 
@@ -86,6 +113,8 @@ namespace Library.API.DbContexts
 
             modelBuilder.Entity<PublicationAuthors>().HasOne(pa => pa.Author).WithMany(a => a.PublicationAuthors).HasForeignKey(pa => pa.AuthorId);
             modelBuilder.Entity<PublicationAuthors>().HasOne(pa => pa.Publication).WithMany(p => p.PublicationAuthors).HasForeignKey(pa => pa.PublicationId);
+
+            modelBuilder.Entity<UserCard>().HasOne(uc => uc.LibraryUser).WithOne(lu => lu.UserCard).HasForeignKey<UserCard>(uc => uc.UserId);
 
             base.OnModelCreating(modelBuilder);
         }

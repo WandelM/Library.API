@@ -42,7 +42,7 @@ namespace Library.API.Services
         /// <param name="entitiesList">Collection of entities</param>
         public void AddRange(IEnumerable<T> entitiesList)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().AddRange(entitiesList);
         }
 
         /// <summary>
@@ -56,6 +56,12 @@ namespace Library.API.Services
             return entities;
         }
 
+        /// <summary>
+        /// Gets paginated list of entities
+        /// </summary>
+        /// <param name="pageSize">Size of single page</param>
+        /// <param name="pageNumber">Number of a page</param>
+        /// <returns></returns>
         public async Task<PaginatedList<T>> GetPaginatedListAsync(int pageSize, int pageNumber)
         {
             var entities = _context.Set<T>() as IQueryable<T>;

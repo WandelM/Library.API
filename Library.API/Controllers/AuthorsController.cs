@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Library.API.Dtos;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Library.API.Controllers
 {
     [Route("api/authors")]
+    [Produces("application/json")]
     [ApiController]
     public class AuthorsController : ControllerBase
     {
@@ -28,11 +31,30 @@ namespace Library.API.Controllers
                 throw new NullReferenceException(nameof(mapper));
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetAuthors")]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<AuthorOutputModel>>> GetAuthors(int pageNumber, int pageSize)
         {
             var authorsFromDb = await _authorRepository.GetPaginatedListAsync(pageSize, pageNumber);
+
+            var nextPageLink = authorsFromDb.HasNext ? 
+                GeneratePaginationLinks(LinkType.Next, pageNumber, pageSize) : null;
+
+            var previousPageLink = authorsFromDb.HasPrevious ? 
+                GeneratePaginationLinks(LinkType.Previous, pageNumber, pageSize) : null;
+
+            var currentPageLink = GeneratePaginationLinks(LinkType.Current, pageNumber, pageSize);
+
+            var paginationMetadata = new PaginationMetaData()
+            {
+                CurrentPageLink = currentPageLink,
+                NextPageLink = nextPageLink,
+                PreviousPageLink = previousPageLink,
+                TotalCount = authorsFromDb.TotalCount,
+                TotalPages = authorsFromDb.TotalPages
+            };
+
+            Response.Headers.Add("PaginationMetadata", JsonSerializer.Serialize(paginationMetadata));
 
             return Ok(_mapper.Map<IEnumerable<AuthorOutputModel>>(authorsFromDb));
         }
@@ -137,6 +159,37 @@ namespace Library.API.Controllers
             await _authorRepository.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private string GeneratePaginationLinks(LinkType type, int pageNumber, int pageSize)
+        {
+            var output = string.Empty;
+
+            switch (type)
+            {
+                case LinkType.Next:
+                    output = Url.Link("GetAuthors", new { pageNumber = pageNumber + 1, pageSize });
+                    break;
+                case LinkType.Previous:
+                    output = Url.Link("GetAuthors", new { pageNumber = pageNumber -1 , pageSize });
+                    break;
+                case LinkType.Current:
+                    output = Url.Link("GetAuthors", new { pageNumber, pageSize });
+                    break;
+                default:
+                    break;
+            }
+
+            return output;
+        }
+
+        private class PaginationMetaData
+        {
+            public int TotalCount { get; set; }
+            public int TotalPages { get; set; }
+            public string CurrentPageLink { get; set; }
+            public string NextPageLink { get; set; }
+            public string PreviousPageLink { get; set; }
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Library.API.Helpers
         public static async Task<PaginatedList<T>> GetPaginatedList(IQueryable<T> source, int pageSize, int pageNumber)
         {
             var totalCount = source.Count();
-            var paginatedItems = await source.Skip((pageSize - 1) * pageNumber).Take(pageSize).ToListAsync();
+            var paginatedItems = await source.Skip(pageSize * pageNumber).Take(pageSize).ToListAsync();
 
             return new PaginatedList<T>(paginatedItems, pageSize, totalCount, pageNumber);
         }

@@ -70,6 +70,8 @@ namespace Library.API
             services.AddTransient(typeof(ICategoriesRepository), typeof(CategoryRepository));
 
             services.AddTransient(typeof(IPublicationRepository), typeof(PublicationRepository));
+
+            services.AddTransient(typeof(IUsersRepository), typeof(UsersRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
