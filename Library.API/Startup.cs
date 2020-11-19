@@ -17,7 +17,7 @@ using AutoMapper;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore;
 using Microsoft.Extensions.Options;
-
+using Library.API.Configurations;
 
 namespace Library.API
 {
@@ -33,45 +33,13 @@ namespace Library.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(configure =>
-            {
-                configure.ReturnHttpNotAcceptable = true;
-            })
-                .AddNewtonsoftJson(configure =>
-                {
-                    configure.SerializerSettings.ContractResolver =
-                    new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver();
-                });
+            services.AddControllersAndLogging();
 
-            services.AddLogging(loggingConfiguration =>
-            {
-                loggingConfiguration.AddConsole();
-            });
+            services.AddSwagger();
 
-            services.AddSwaggerGen(setup =>
-            {
-                setup.SwaggerDoc("LibraryAPI", new Microsoft.OpenApi.Models.OpenApiInfo()
-                {
-                    Title = "LibraryAPI",
-                    Version = "v1"
-                });
-            });
+            services.AddDbContextAndMapper(Configuration);
 
-            services.AddDbContext<LibraryContext>(configure => {
-                configure.UseSqlServer(Configuration.GetConnectionString("LibraryConnection"));
-            });
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            services.AddTransient(typeof(IAuthorRepository), typeof(AuthorsRepository));
-
-            services.AddTransient(typeof(IPublicationHouseRepository), typeof(PublicationHouseRepository));
-
-            services.AddTransient(typeof(ICategoriesRepository), typeof(CategoryRepository));
-
-            services.AddTransient(typeof(IPublicationRepository), typeof(PublicationRepository));
-
-            services.AddTransient(typeof(IUsersRepository), typeof(UsersRepository));
+            services.AddRepositiories();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +48,8 @@ namespace Library.API
             app.UseHttpsRedirection();
             
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(configure =>
             {
